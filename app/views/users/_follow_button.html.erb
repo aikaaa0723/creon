@@ -1,0 +1,13 @@
+<%= turbo_frame_tag dom_id(user, :follow) do %>
+  <% if current_user.following.include?(user) %>
+    <%= button_to "フォロー解除",
+        relationship_path(current_user.active_relationships.find_by(followed_id: user.id)),
+        method: :delete,
+        data: { turbo_stream: true } %>
+  <% else %>
+    <%= button_to "フォロー",
+        relationships_path(followed_id: user.id),
+        method: :post,
+        data: { turbo_stream: true } %>
+  <% end %>
+<% end %>

@@ -1,0 +1,12 @@
+<h1>##<%= @tag.name %> の投稿</h1>
+
+<%= link_to "タグ一覧へ戻る", tags_path %>
+
+<% @tweets.each do |tweet| %>
+  <div style="margin-bottom: 20px;">
+    <%= image_tag tweet.image.variant(resize_to_limit: [300, 300]) if tweet.image.attached? %>
+    <strong><%= tweet.caption %></strong><br>
+    <small>by <%= tweet.user.username || tweet.user.email %></small><br>
+    <%= link_to "詳細を見る", tweet_path(tweet) %>
+  </div>
+<% end %>

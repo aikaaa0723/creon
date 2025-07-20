@@ -1,0 +1,10 @@
+<%= turbo_stream_from "room_#{@room.id}_messages" %>
+
+<div id="messages" class="message-list">
+  <% messages.each do |message| %>
+    <div id="message_<%= message.id %>" class="<%= message.user == current_user ? 'my-message' : 'other-message' %>">
+      <strong><%= message.user.username %></strong><br>
+      <%= message.content %>
+    </div>
+  <% end %>
+</div>

@@ -1,0 +1,30 @@
+<div 
+  class="absolute bg-white text-black rounded-xl border-4 border-blue-500 shadow-xl w-64 p-3 font-dot cursor-move" 
+  style="top:<%= rand(80..500) %>px; left:<%= rand(50..800) %>px; z-index: <%= rand(10..999) %>;"
+  data-controller="draggable"
+>
+  <!-- ヘッダー -->
+  <div class="flex justify-between items-center mb-2">
+    <span class="text-sm font-bold"><%= tweet.user.username %></span>
+    <button class="text-red-500 hover:text-red-700 font-bold text-lg" onclick="this.closest('div').remove()">×</button>
+  </div>
+
+  <!-- 画像 -->
+  <% if tweet.image.attached? %>
+    <%= image_tag tweet.image.variant(resize_to_limit: [250, 250]), class: "rounded mb-2" %>
+  <% end %>
+
+  <!-- キャプション -->
+  <div class="text-sm mb-1"><%= tweet.caption %></div>
+
+  <!-- タグ・メタ情報 -->
+  <div class="text-xs text-gray-600 space-x-2 mt-2">
+    <% tweet.tag_list.each do |tag| %>
+      <span class="inline-block bg-gray-200 rounded px-2 py-0.5 text-[10px] text-gray-800">#<%= tag %></span>
+    <% end %>
+  </div>
+
+  <div class="text-xs text-right text-gray-500 mt-1">
+    ♥ <%= tweet.likes.count %>・💬 <%= tweet.comments.count %>
+  </div>
+</div>

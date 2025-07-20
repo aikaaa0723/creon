@@ -1,0 +1,39 @@
+<div id="comment_<%= comment.id %>" class="p-2 border rounded mb-2 ml-<%= comment.parent_id ? 4 : 0 %> bg-gray-50">
+  <strong><%= comment.user.username %></strong>: <%= comment.content %>
+
+  <!-- コメントへのいいね -->
+  <div>
+    <%= form_with url: comment_comment_like_path(comment), method: :post, local: true do %>
+      <%= submit_tag "❤️ #{comment.comment_likes.count}", class: "text-red-500" %>
+    <% end %>
+  </div>
+
+  <!-- 編集・削除（本人のみ） -->
+  <% if current_user == comment.user %>
+    <div class="mt-1">
+      <%= link_to "編集", edit_tweet_comment_path(comment.tweet, comment), class: "text-blue-600" %> |
+      <%= link_to "削除", tweet_comment_path(comment.tweet, comment), method: :delete,
+                data: { confirm: "コメントを削除しますか？" },
+                class: "text-red-600" %>
+    </div>
+  <% end %>
+
+
+  <!-- 返信フォーム（認証済ユーザーのみ） -->
+  <% if user_signed_in? %>
+    <div class="mt-2 ml-4">
+      <%= form_with(model: [comment.tweet, Comment.new], local: true) do |form| %>
+        <%= form.hidden_field :parent_id, value: comment.id %>
+        <%= form.text_area :content, rows: 2, placeholder: "返信を書く...", class: "w-full mt-1" %>
+        <%= form.submit "返信", class: "mt-1 btn btn-sm btn-primary" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <!-- 子コメント（リプライ）を再帰的に表示 -->
+  <div class="ml-4">
+    <% comment.replies.each do |reply| %>
+      <%= render partial: "comments/comment", locals: { comment: reply } %>
+    <% end %>
+  </div>
+</div>

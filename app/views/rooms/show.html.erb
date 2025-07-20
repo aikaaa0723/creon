@@ -1,0 +1,14 @@
+<h2>DMルーム</h2>
+
+<div id="messages">
+  <%= render partial: "messages/messages", locals: { messages: @messages } %>
+</div>
+
+<%= form_with model: [@room, @message], data: { turbo_stream: true }, local: false do |f| %>
+  <div>
+    <%= f.text_area :content, rows: 3, placeholder: "メッセージを入力…" %>
+  </div>
+  <div>
+    <%= f.submit "送信" %>
+  </div>
+<% end %>

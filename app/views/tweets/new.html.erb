@@ -1,0 +1,38 @@
+<!-- app/views/tweets/new.html.erb -->
+<div class="min-h-screen bg-[#121212] text-white font-['Press_Start_2P'] p-8">
+
+  <h1 class="text-2xl mb-6 text-pink-300 border-b-2 border-pink-500 inline-block pb-2">New Post</h1>
+
+  <%= form_with model: @tweet, local: true, html: { class: "space-y-6 bg-[#1e1e1e] p-6 rounded-xl border-2 border-white shadow-lg" } do |form| %>
+
+    <% if @tweet.errors.any? %>
+      <div class="bg-red-800 text-white p-4 rounded">
+        <h2 class="text-lg mb-2">🚨 <%= pluralize(@tweet.errors.count, "エラー") %>が発生しました:</h2>
+        <ul class="list-disc ml-6 space-y-1 text-sm">
+          <% @tweet.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <!-- キャプション入力 -->
+    <div>
+      <%= form.label :caption, "キャプション", class: "block text-sm mb-1 text-pink-400" %>
+      <%= form.text_field :caption, class: "w-full bg-black border border-pink-500 rounded px-2 py-1 text-white placeholder-gray-500" %>
+    </div>
+
+    <!-- 画像アップロード -->
+    <div>
+      <%= form.label :image, "画像", class: "block text-sm mb-1 text-pink-400" %>
+      <%= form.file_field :image, class: "bg-black text-white border border-pink-500 rounded px-2 py-1" %>
+    </div>
+
+    <!-- 投稿ボタン -->
+    <div>
+      <%= form.submit "🚀 投稿する", class: "bg-pink-500 hover:bg-pink-600 text-white text-sm px-4 py-2 rounded transition" %>
+    </div>
+
+  <% end %>
+
+</div>

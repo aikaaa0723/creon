@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+
+    <title><%= content_for(:title) || "Creon" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <script src="https://kit.fontawesome.com/ff8ee8da1e.js" crossorigin="anonymous"></script>
+    <%= javascript_importmap_tags %>
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+
+    <%= stylesheet_link_tag "application" %>
+  </head>
+
+  <body class="min-h-screen bg-cover bg-fixed text-black font-['Press_Start_2P'] flex" style="background-image: url('/assets/default_bg.png')">
+
+    <!-- サイドバー -->
+    <div class="w-48 min-h-screen bg-black/20 text-black p-4 font-dot">
+      <nav class="space-y-4">
+        <%= link_to root_path, class: "flex items-center gap-2 hover:translate-y-[-2px] transition transform duration-150" do %>
+          <%= image_tag "icons/sparkle.svg", class: "w-5 h-5" %>
+          TOP
+        <% end %>
+
+        <%= link_to tweets_path, class: "flex items-center gap-2 hover:translate-y-[-2px] transition transform duration-150" do %>
+          <%= image_tag "icons/search.svg", class: "w-5 h-5" %>
+          SEARCH
+        <% end %>
+
+        <%= link_to new_tweet_path, class: "flex items-center gap-2 hover:translate-y-[-2px] transition transform duration-150" do %>
+          <%= image_tag "icons/palette.svg", class: "w-5 h-5" %>
+          POST
+        <% end %>
+
+        <%= link_to rooms_path, class: "flex items-center gap-2 hover:translate-y-[-2px] transition transform duration-150" do %>
+          <%= image_tag "icons/mails.svg", class: "w-5 h-5" %>
+          DM
+        <% end %>
+
+        <% if current_user %>
+          <%= link_to user_path(current_user), class: "flex items-center gap-2 hover:translate-y-[-2px] transition transform duration-150" do %>
+            <%= image_tag "icons/paw-print.svg", class: "w-5 h-5" %>
+            MY PAGE
+          <% end %>
+
+          <%= link_to edit_user_path(current_user), class: "flex items-center gap-2 hover:translate-y-[-2px] transition transform duration-150" do %>
+            <%= image_tag "icons/settings.svg", class: "w-5 h-5" %>
+            settings
+          <% end %>
+        <% end %>
+      </nav>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <div class="flex-1 p-6">
+      <%= yield %>
+    </div>
+
+  </body>
+</html>

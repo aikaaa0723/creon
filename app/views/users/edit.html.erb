@@ -1,0 +1,35 @@
+<div class="max-w-xl mx-auto mt-10 bg-white text-black p-6 rounded-2xl shadow-lg font-dot">
+
+  <h1 class="text-2xl font-bold text-center mb-6">プロフィール編集</h1>
+
+  <%= form_with model: @user, local: true do |form| %>
+    
+    <!-- ユーザー名 -->
+    <div class="mb-4">
+      <%= form.label :username, "ユーザー名", class: "block text-sm font-bold mb-1" %>
+      <%= form.text_field :username, class: "w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-400" %>
+    </div>
+
+    <!-- 自己紹介 -->
+    <div class="mb-4">
+      <%= form.label :introduction, "自己紹介", class: "block text-sm font-bold mb-1" %>
+      <%= form.text_area :introduction, rows: 4, class: "w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:border-blue-400" %>
+    </div>
+
+    <!-- アバター画像 -->
+    <div class="mb-6">
+      <%= form.label :avatar, "アイコン画像", class: "block text-sm font-bold mb-1" %>
+      <%= form.file_field :avatar, class: "block w-full text-sm text-gray-600" %>
+      <% if @user.avatar.attached? %>
+        <p class="mt-2 text-xs text-gray-500">現在の画像:</p>
+        <%= image_tag @user.avatar.variant(resize_to_limit: [100, 100]), class: "mt-1 rounded-full shadow" %>
+      <% end %>
+    </div>
+
+    <!-- 更新ボタン -->
+    <div class="text-center">
+      <%= form.submit "更新", class: "px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-full shadow transition" %>
+    </div>
+
+  <% end %>
+</div>

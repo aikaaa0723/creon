@@ -1,0 +1,17 @@
+<!-- app/views/users/like.html.erb -->
+<h2><%= @user.username %> さんの「いいね」した投稿</h2>
+
+<% if @liked_tweets.any? %>
+  <% @liked_tweets.each do |tweet| %>
+    <div class="tweet-card" style="margin-bottom: 20px;">
+      <% if tweet.image.attached? %>
+        <%= image_tag tweet.image.variant(resize_to_limit: [300, 300]) %><br>
+      <% end %>
+      <strong><%= tweet.caption %></strong><br>
+      <small>by <%= tweet.user.username || tweet.user.email %></small><br>
+      <%= link_to "詳細を見る", tweet_path(tweet) %>
+    </div>
+  <% end %>
+<% else %>
+  <p>まだ「いいね」した投稿はありません。</p>
+<% end %>

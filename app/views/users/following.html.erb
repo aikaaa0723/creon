@@ -1,0 +1,4 @@
+<h3><%= @user.username %> のフォロー一覧</h3>
+<% @users.each do |user| %>
+  <p><%= link_to user.username, user_path(user) %></p>
+<% end %>

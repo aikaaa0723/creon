@@ -1,0 +1,11 @@
+<%= turbo_frame_tag dom_id(tweet, :like) do %>
+  <% if current_user && tweet.likes.exists?(user: current_user) %>
+    <%= button_to tweet_like_path(tweet), method: :delete, form: { data: { turbo_stream: true } }, class: "btn" do %>
+      <i class="fas fa-heart text-red-500"></i> <%= tweet.likes.count %>
+    <% end %>
+  <% else %>
+    <%= button_to tweet_like_path(tweet), method: :post, form: { data: { turbo_stream: true } }, class: "btn" do %>
+      <i class="far fa-heart"></i> <%= tweet.likes.count %>
+    <% end %>
+  <% end %>
+<% end %>

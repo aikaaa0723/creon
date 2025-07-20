@@ -1,0 +1,8 @@
+<turbo-stream target="messages" action="append">
+  <template>
+    <div class="<%= @message.user == current_user ? 'my-message' : 'other-message' %>">
+      <strong><%= @message.user.username %></strong><br>
+      <%= @message.content %>
+    </div>
+  </template>
+</turbo-stream>

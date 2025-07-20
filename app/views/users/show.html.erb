@@ -1,0 +1,45 @@
+<div class="min-h-screen bg-gray-900 text-white font-dot relative overflow-hidden">
+
+  <!-- プロフィールセクション -->
+  <div class="flex flex-col items-center py-12 bg-black/60 backdrop-blur-md z-10 relative">
+    <% if @user.avatar.attached? %>
+      <%= image_tag @user.avatar.variant(resize_to_limit: [128, 128]), class: "rounded-full border-4 border-white shadow-lg" %>
+    <% end %>
+    <h1 class="text-3xl font-bold mt-4 tracking-wider"><%= @user.username %></h1>
+    <p class="text-sm text-gray-300 mt-2 max-w-md text-center px-4"><%= @user.introduction.presence || "自己紹介は未記入です。" %></p>
+
+    <% if current_user == @user %>
+      <%= link_to "プロフィール編集", edit_user_path(@user), class: "mt-4 inline-block bg-white text-black px-4 py-1 rounded-full text-sm hover:bg-gray-300 transition" %>
+    <% end %>
+
+    <%= link_to "♥ いいね一覧", like_user_path(@user), class: "mt-2 text-sm text-pink-300 hover:underline" %>
+  </div>
+
+  <!-- 投稿一覧セクション -->
+  <div class="relative min-h-screen overflow-hidden p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <% @user.tweets.each do |tweet| %>
+      <div class="bg-[#1f1f1f] border-2 border-white rounded-xl shadow-lg p-4">
+        <%= link_to tweet_path(tweet), class: "block hover:opacity-90 transition" do %>
+          <% if tweet.image.attached? %>
+            <%= image_tag tweet.image.variant(resize_to_limit: [400, 400]), class: "rounded border border-gray-500 mx-auto mb-3" %>
+          <% end %>
+          <p class="text-sm text-white mb-1"><%= tweet.caption %></p>
+        <% end %>
+
+        <div class="text-[10px] text-gray-400 space-x-1 mb-2">
+          <% tweet.tag_list.each do |tag| %>
+            <%= link_to "##{tag}", tweets_path(query: tag), class: "bg-pink-800 px-1 py-[1px] rounded" %>
+          <% end %>
+        </div>
+
+        <% if current_user == tweet.user %>
+          <div class="text-xs flex justify-between mt-2">
+            <%= link_to "✏ 編集", edit_tweet_path(tweet), class: "text-blue-400 hover:underline" %>
+            <%= link_to "🗑 削除", tweet_path(tweet), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "text-red-400 hover:underline" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+</div>

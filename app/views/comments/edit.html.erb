@@ -1,0 +1,6 @@
+<h2>コメントを編集</h2>
+
+<%= form_with(model: [@comment.tweet, @comment], local: true) do |form| %>
+  <%= form.text_area :content %>
+  <%= form.submit "更新" %>
+<% end %>

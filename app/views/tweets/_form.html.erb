@@ -1,0 +1,21 @@
+<!-- app/views/tweets/_form.html.erb -->
+<%= form_with model: @tweet, local: true do |f| %>
+  <div>
+    <%= f.label :caption, "キャプション" %><br>
+    <%= f.text_field :caption %>
+  </div>
+
+  <div>
+    <%= f.label :image, "画像" %><br>
+    <%= f.file_field :image %>
+  </div>
+
+  <div>
+    <%= f.label :tag_list, "タグ (カンマ区切り)" %><br>
+    <%= f.text_field :tag_list, value: @tweet.tag_list.join(", ") %>
+  </div>
+
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

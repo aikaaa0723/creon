@@ -1,90 +1,119 @@
-
 <div class="main-content p-6 font-dot text-white space-y-16">
-  <h1 class="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-green-400 to-blue-400 mb-8">
-    Creonへようこそ！
+  <!-- アプリ名 -->
+  <h1 class="text-6xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-green-400 to-yellow-400 drop-shadow-lg mb-12 text-center">
+    Creon
   </h1>
 
   <!-- フォロー中の投稿 -->
   <% if @following_tweets.present? %>
     <section>
-      <h2 class="text-xl font-bold text-pink-400 mb-4">★ フォロー中のユーザーの投稿</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% @following_tweets.each do |tweet| %>
-          <div class="border-2 border-white rounded-xl shadow-lg bg-[#1f1f1f] p-4 relative">
-            <div class="flex justify-between items-center mb-2 text-pink-400 text-xs font-bold">
-              <span>フォロー中</span>
-              <button class="hover:text-red-400" onclick="this.closest('div').remove()">×</button>
-            </div>
-            <div class="text-sm mb-1 text-pink-300">👤 <%= tweet.user.username %></div>
-            <% if tweet.image.attached? %>
-              <%= image_tag tweet.image.variant(resize_to_limit: [260, 260]), class: "rounded border border-gray-500 mb-2 mx-auto" %>
-            <% end %>
-            <div class="text-xs text-white mb-2"><%= tweet.caption %></div>
-            <div class="text-[10px] text-gray-400">
-              ❤️ <%= tweet.likes.count %>　💬 <%= tweet.comments.count %><br>
-              <% tweet.tag_list.each do |tag| %>
-                <span class="bg-pink-700 px-1 rounded text-[10px]">#<%= tag %></span>
+      <h2 class="text-xl font-bold text-pink-400 mb-4">★FOllow</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="following-tweets">
+        <% @following_tweets.each_with_index do |tweet, index| %>
+          <%= link_to tweet_path(tweet), class: "block group transition duration-200 hover:scale-[1.02]" do %>
+            <div class="border-2 border-white rounded-xl shadow-lg bg-[#1f1f1f] p-4 relative">
+              <div class="flex justify-between items-center mb-2 text-pink-400 text-xs font-bold">
+                <span>フォロー中</span>
+                <span class="group-hover:text-red-400">×</span> <!-- ×ボタン削除するならここも消す -->
+              </div>
+              <div class="text-sm mb-1 text-pink-300">👤 <%= tweet.user.username %></div>
+              <% if tweet.image.attached? %>
+                <%= image_tag tweet.image.variant(resize_to_limit: [260, 260]), class: "rounded border border-gray-500 mb-2 mx-auto" %>
               <% end %>
+              <div class="text-xs text-white mb-2"><%= tweet.caption %></div>
+              <div class="text-[10px] text-gray-400">
+                ❤️ <%= tweet.likes.count %>　💬 <%= tweet.comments.count %><br>
+                <% tweet.tag_list.each do |tag| %>
+                  <span class="bg-pink-700 px-1 rounded text-[10px]">#<%= tag %></span>
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
       </div>
+      <% if @following_tweets.size > 4 %>
+        <div class="mt-4 text-center">
+          <button onclick="showMore('more-following', this)" class="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700 transition">もっと見る</button>
+        </div>
+      <% end %>
     </section>
   <% end %>
 
-  <!-- おすすめ（いいねベース） -->
+  <!-- おすすめ(いいねベース) -->
   <% if @liked_based_recommendations.present? %>
     <section>
-      <h2 class="text-xl font-bold text-yellow-400 mb-4">★ おすすめ（いいねベース）</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% @liked_based_recommendations.each do |tweet| %>
-          <div class="border-2 border-white rounded-xl shadow-lg bg-[#1f1f1f] p-4 relative">
-            <div class="flex justify-between items-center mb-2 text-yellow-400 text-xs font-bold">
-              <span>おすすめ（いいね）</span>
-              <button class="hover:text-red-400" onclick="this.closest('div').remove()">×</button>
-            </div>
-            <div class="text-sm mb-1 text-yellow-300">👤 <%= tweet.user.username %></div>
-            <% if tweet.image.attached? %>
-              <%= image_tag tweet.image.variant(resize_to_limit: [260, 260]), class: "rounded border border-gray-500 mb-2 mx-auto" %>
-            <% end %>
-            <div class="text-xs text-white mb-2"><%= tweet.caption %></div>
-            <div class="text-[10px] text-gray-400">
-              ❤️ <%= tweet.likes.count %>　💬 <%= tweet.comments.count %><br>
-              <% tweet.tag_list.each do |tag| %>
-                <span class="bg-yellow-700 px-1 rounded text-[10px]">#<%= tag %></span>
+      <h2 class="text-xl font-bold text-yellow-400 mb-4">★Likes</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="liked-tweets">
+        <% @liked_based_recommendations.each_with_index do |tweet, index| %>
+          <%= link_to tweet_path(tweet), class: "block group transition duration-200 hover:scale-[1.02]" do %>
+            <div class="border-2 border-white rounded-xl shadow-lg bg-[#1f1f1f] p-4 relative <%= 'hidden more-liked' if index >= 4 %>">
+              <div class="flex justify-between items-center mb-2 text-yellow-400 text-xs font-bold">
+                <span>おすすめ（いいね）</span>
+                <button class="hover:text-red-400" onclick="this.closest('div').remove()">×</button>
+              </div>
+              <div class="text-sm mb-1 text-yellow-300">👤 <%= tweet.user.username %></div>
+              <% if tweet.image.attached? %>
+                <%= image_tag tweet.image.variant(resize_to_limit: [260, 260]), class: "rounded border border-gray-500 mb-2 mx-auto" %>
               <% end %>
+              <div class="text-xs text-white mb-2"><%= tweet.caption %></div>
+              <div class="text-[10px] text-gray-400">
+                ❤️ <%= tweet.likes.count %>　💬 <%= tweet.comments.count %><br>
+                <% tweet.tag_list.each do |tag| %>
+                  <span class="bg-yellow-700 px-1 rounded text-[10px]">#<%= tag %></span>
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
       </div>
+      <% if @liked_based_recommendations.size > 4 %>
+        <div class="mt-4 text-center">
+          <button onclick="showMore('more-liked', this)" class="px-4 py-2 bg-yellow-600 text-white rounded hover:bg-yellow-700 transition">もっと見る</button>
+        </div>
+      <% end %>
     </section>
   <% end %>
 
   <!-- おすすめ（滞在時間・ジャンルベース） -->
   <% if @recommended_tweets.present? %>
     <section>
-      <h2 class="text-xl font-bold text-green-400 mb-4">★ おすすめ（滞在時間・ジャンルベース）</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% @recommended_tweets.each do |tweet| %>
-          <div class="border-2 border-white rounded-xl shadow-lg bg-[#1f1f1f] p-4 relative">
-            <div class="flex justify-between items-center mb-2 text-green-400 text-xs font-bold">
-              <span>おすすめ（滞在/ジャンル）</span>
-              <button class="hover:text-red-400" onclick="this.closest('div').remove()">×</button>
-            </div>
-            <div class="text-sm mb-1 text-green-300">👤 <%= tweet.user.username %></div>
-            <% if tweet.image.attached? %>
-              <%= image_tag tweet.image.variant(resize_to_limit: [260, 260]), class: "rounded border border-gray-500 mb-2 mx-auto" %>
-            <% end %>
-            <div class="text-xs text-white mb-2"><%= tweet.caption %></div>
-            <div class="text-[10px] text-gray-400">
-              ❤️ <%= tweet.likes.count %>　💬 <%= tweet.comments.count %><br>
-              <% tweet.tag_list.each do |tag| %>
-                <span class="bg-green-700 px-1 rounded text-[10px]">#<%= tag %></span>
+      <h2 class="text-xl font-bold text-green-400 mb-4">★Recimmendation</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="genre-tweets">
+        <% @recommended_tweets.each_with_index do |tweet, index| %>
+          <%= link_to tweet_path(tweet), class: "block group transition duration-200 hover:scale-[1.02]" do %>
+            <div class="border-2 border-white rounded-xl shadow-lg bg-[#1f1f1f] p-4 relative <%= 'hidden more-genre' if index >= 4 %>">
+              <div class="flex justify-between items-center mb-2 text-green-400 text-xs font-bold">
+                <span>おすすめ（滞在/ジャンル）</span>
+                <button class="hover:text-red-400" onclick="this.closest('div').remove()">×</button>
+              </div>
+              <div class="text-sm mb-1 text-green-300">👤 <%= tweet.user.username %></div>
+              <% if tweet.image.attached? %>
+                <%= image_tag tweet.image.variant(resize_to_limit: [260, 260]), class: "rounded border border-gray-500 mb-2 mx-auto" %>
               <% end %>
+              <div class="text-xs text-white mb-2"><%= tweet.caption %></div>
+              <div class="text-[10px] text-gray-400">
+                ❤️ <%= tweet.likes.count %>　💬 <%= tweet.comments.count %><br>
+                <% tweet.tag_list.each do |tag| %>
+                  <span class="bg-green-700 px-1 rounded text-[10px]">#<%= tag %></span>
+                <% end %>
+              </div>
             </div>
-          </div>
+          <% end %>
         <% end %>
       </div>
+      <% if @recommended_tweets.size > 4 %>
+        <div class="mt-4 text-center">
+          <button onclick="showMore('more-genre', this)" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">もっと見る</button>
+        </div>
+      <% end %>
     </section>
   <% end %>
+
+  <!-- JS：もっと見る -->
+  <script>
+    function showMore(className, button) {
+      document.querySelectorAll(`.${className}`).forEach(el => el.classList.remove('hidden'));
+      button.style.display = 'none';
+    }
+  </script>
 </div>

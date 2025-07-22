@@ -12,7 +12,7 @@ class User < ApplicationRecord
   has_many :liked_tweets, through: :likes, source: :tweet
   has_many :comments, dependent: :destroy
   has_many :comment_likes
-
+  has_one_attached :avatar
   # フォロー関連
   has_many :active_relationships, class_name: "Relationship",
            foreign_key: "follower_id", dependent: :destroy

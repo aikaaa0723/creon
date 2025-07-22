@@ -1,21 +1,21 @@
 <div class="min-h-screen bg-[#121212] text-white font-['Press_Start_2P'] p-6">
 
-  <!-- 検索フォーム（背景あり） -->
+  <!-- Search Form -->
   <div class="bg-[#1f1f1f] p-4 rounded-xl border-2 border-black shadow-md mb-10">
     <%= form_with url: tweets_path, method: :get, local: true, class: "space-y-2" do |form| %>
       <div class="flex flex-col md:flex-row gap-2">
-        <%= form.text_field :query, value: params[:query], placeholder: "キーワード or タグ", 
+        <%= form.text_field :query, value: params[:query], placeholder: "Keyword or #Tag",
           class: "flex-1 px-2 py-1 rounded border border-pink-300 bg-black text-white placeholder-gray-500" %>
-        <%= form.submit "検索", class: "bg-red-500 text-white px-4 py-1 rounded hover:bg-pink-600 transition" %>
+        <%= form.submit "🔍 Search", class: "bg-red-500 text-white px-4 py-1 rounded hover:bg-pink-600 transition" %>
       </div>
     <% end %>
 
     <% if @query.present? %>
-      <p class="mt-2 text-sm text-pink-300"><%= @tweets.count %> 件の結果が見つかりました。</p>
+      <p class="mt-2 text-sm text-pink-300"><%= @tweets.count %> result(s) found.</p>
     <% end %>
 
     <% if session[:search_history].present? %>
-      <p class="mt-4 text-yellow-400">🔍 最近の検索:</p>
+      <p class="mt-4 text-yellow-400">🕘 Recent Searches:</p>
       <ul class="flex flex-wrap gap-2 text-sm mt-1">
         <% session[:search_history].each do |keyword| %>
           <li><%= link_to keyword, tweets_path(query: keyword), class: "underline text-yellow-300 hover:text-yellow-200" %></li>
@@ -23,7 +23,7 @@
       </ul>
     <% end %>
 
-    <p class="mt-4 text-green-400">人気タグ:</p>
+    <p class="mt-4 text-green-400">🔥Pop Tags:</p>
     <ul class="flex flex-wrap gap-2 mt-1 text-sm">
       <% @popular_tags.each do |tag| %>
         <li>
@@ -33,59 +33,60 @@
     </ul>
   </div>
 
-  <!-- 投稿一覧タイトル -->
+  <!-- Post List Title -->
   <div class="flex justify-between items-center mb-6">
-    <h1 class="text-xl border-b-2 border-white pb-1">🖼 投稿一覧</h1>
-    <%= link_to "＋新しい投稿", new_tweet_path, class: "text-pink-400 hover:text-pink-200 underline" %>
+    <h1 class="text-xl border-b-2 border-white pb-1">🖼 Post List</h1>
+    <%= link_to "+ New Post", new_tweet_path, class: "text-pink-400 hover:text-pink-200 underline" %>
   </div>
 
-  <!-- 投稿一覧グリッド -->
+  <!-- Post Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     <% @tweets.each do |tweet| %>
-      <div class="bg-[#1f1f1f] rounded-xl border-2 border-white shadow-lg p-4 space-y-2 relative">
-        <!-- 閉じるボタン風デザイン -->
-        <div class="absolute top-1 right-2 text-white text-sm cursor-pointer hover:text-red-400" onclick="this.parentElement.remove()">×</div>
+      <%= link_to tweet_path(tweet), class: "block hover:scale-[1.02] transition duration-150" do %>
+        <div class="bg-[#1f1f1f] rounded-xl border-2 border-white shadow-lg p-4 space-y-2 relative">
 
-        <% if tweet.image.attached? %>
-          <%= image_tag tweet.image.variant(resize_to_limit: [300, 300]), class: "rounded border border-gray-600 mx-auto" %>
-        <% end %>
-
-        <div class="text-sm mt-2">
-          <p><strong><%= tweet.caption %></strong></p>
-          <p class="text-gray-300 text-xs">by <%= tweet.user.username || tweet.user.email %></p>
-        </div>
-
-        <% if tweet.tag_list.present? %>
-          <div class="text-[10px] mt-1 text-gray-400 space-x-1">
-            <% tweet.tag_list.each do |tag| %>
-              <%= link_to "##{tag}", tweets_path(query: tag), class: "bg-pink-800 px-1 py-[1px] rounded" %>
-            <% end %>
-          </div>
-        <% end %>
-
-        <% unless tweet.user == current_user %>
-          <div class="mt-2">
-            <%= button_to "✉ DMする", rooms_path(user_id: tweet.user.id), method: :post,
-                class: "bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded" %>
-          </div>
-        <% end %>
-
-        <div class="mt-2">
-          <%= turbo_frame_tag dom_id(tweet, :like) do %>
-            <% if current_user && tweet.likes.exists?(user: current_user) %>
-              <%= button_to tweet_like_path(tweet), method: :delete,
-                            form: { data: { turbo_stream: true } }, class: "text-red-400 hover:text-red-300 text-sm" do %>
-                ❤️ <%= tweet.likes.count %>
-              <% end %>
-            <% else %>
-              <%= button_to tweet_like_path(tweet), method: :post,
-                            form: { data: { turbo_stream: true } }, class: "text-white hover:text-red-300 text-sm" do %>
-                🤍 <%= tweet.likes.count %>
-              <% end %>
-            <% end %>
+          <% if tweet.image.attached? %>
+            <%= image_tag tweet.image.variant(resize_to_limit: [300, 300]), class: "rounded border border-gray-600 mx-auto" %>
           <% end %>
+
+          <div class="text-sm mt-2">
+            <p><strong><%= tweet.caption %></strong></p>
+            <p class="text-gray-300 text-xs">👤 by <%= tweet.user.username || tweet.user.email %></p>
+          </div>
+
+          <% if tweet.tag_list.present? %>
+            <div class="text-[10px] mt-1 text-gray-400 space-x-1">
+              <% tweet.tag_list.each do |tag| %>
+                <%= link_to "##{tag}", tweets_path(query: tag), class: "bg-pink-800 px-1 py-[1px] rounded hover:bg-pink-600" %>
+              <% end %>
+            </div>
+          <% end %>
+
+          <% unless tweet.user == current_user %>
+            <div class="mt-2">
+              <%= button_to "✉ DM", rooms_path(user_id: tweet.user.id), method: :post,
+                class: "bg-blue-600 hover:bg-blue-700 text-white text-xs px-2 py-1 rounded" %>
+
+            </div>
+          <% end %>
+
+          <div class="mt-2">
+            <%= turbo_frame_tag dom_id(tweet, :like) do %>
+              <% if current_user && tweet.likes.exists?(user: current_user) %>
+                <%= button_to tweet_like_path(tweet), method: :delete,
+                              form: { data: { turbo_stream: true } }, class: "text-red-400 hover:text-red-300 text-sm" do %>
+                  ❤️ <%= tweet.likes.count %>
+                <% end %>
+              <% else %>
+                <%= button_to tweet_like_path(tweet), method: :post,
+                              form: { data: { turbo_stream: true } }, class: "text-white hover:text-red-300 text-sm" do %>
+                  🤍 <%= tweet.likes.count %>
+                <% end %>
+              <% end %>
+            <% end %>
+          </div>
         </div>
-      </div>
+      <% end %>
     <% end %>
   </div>
 </div>

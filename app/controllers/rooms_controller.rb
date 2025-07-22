@@ -15,20 +15,26 @@ class RoomsController < ApplicationController
   def create
     recipient = User.find(params[:user_id])
 
-    # 共通のルームがあるか確認（自分と相手の両方が参加しているルーム）
+    # すでに共通のルームがあるか確認
     existing_room = current_user.rooms.joins(:users)
                           .where(users: { id: recipient.id })
                           .first
 
     @room = existing_room || Room.create
 
-    if @room.entries.empty?
+    # current_userが参加していないなら追加
+    unless @room.users.include?(current_user)
       Entry.create(user: current_user, room: @room)
+    end
+
+    # recipientが参加していないなら追加
+    unless @room.users.include?(recipient)
       Entry.create(user: recipient, room: @room)
     end
 
     redirect_to @room
   end
+
 
   private
 

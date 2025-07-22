@@ -63,7 +63,7 @@ end
       @tweet.destroy
       redirect_to tweets_path, notice: '投稿を削除しました'
     else
-      redirect_to tweets_path, alert: '権限がありません'
+      redirect_to tweets_path(@tweet), alert: '権限がありません'
     end
   end
 

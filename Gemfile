@@ -82,3 +82,5 @@ gem 'tailwindcss-rails'
 group :production do
   gem 'pg'
 end
+
+gem "vite_rails"

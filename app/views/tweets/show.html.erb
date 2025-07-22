@@ -1,27 +1,46 @@
 <div class="min-h-screen bg-[#121212] text-white font-['Press_Start_2P'] p-6">
 
-  <!-- 投稿詳細 -->
-  <div class="bg-black/80 border-2 border-pink-400 rounded-2xl p-6 shadow-xl max-w-lg mx-auto">
-    <h2 class="text-pink-400 text-xl mb-4">🖼 投稿詳細</h2>
+  <!-- Post Detail Card -->
+  <div class="bg-black/50 border-2 border-pink-400 rounded-2xl p-6 shadow-xl max-w-lg mx-auto">
 
+    <!-- 投稿者情報 -->
+    <div class="flex items-center mb-4 space-x-4">
+      <%= link_to user_path(@tweet.user), class: "flex items-center space-x-2 hover:opacity-80" do %>
+        <% if @tweet.user.avatar.attached? %>
+          <%= image_tag @tweet.user.avatar.variant(resize_to_limit: [40, 40]), class: "w-10 h-10 rounded-full border border-gray-500" %>
+        <% else %>
+          <div class="w-10 h-10 rounded-full bg-gray-700 border border-gray-500 flex items-center justify-center text-xs">👤</div>
+        <% end %>
+        <span class="text-sm text-pink-300">@<%= @tweet.user.username || "user#{@tweet.user.id}" %></span>
+      <% end %>
+    </div>
+
+    <!-- ヘッダー -->
+    <h2 class="text-pink-400 text-xl mb-4">🖼 Post Detail</h2>
+
+    <!-- 画像 -->
     <% if @tweet.image.attached? %>
       <%= image_tag @tweet.image.variant(resize_to_limit: [300, 300]), class: "rounded-lg mx-auto mb-4" %>
     <% end %>
 
+    <!-- キャプション -->
     <p class="text-sm mb-2"><%= @tweet.caption %></p>
-    <p class="text-xs text-gray-400">by <%= @tweet.user.username || @tweet.user.email %></p>
 
+    <!-- 編集・削除 -->
     <% if user_signed_in? && current_user == @tweet.user %>
       <div class="mt-4 space-x-4">
-        <%= link_to "✏ 編集", edit_tweet_path(@tweet), class: "text-blue-400 hover:underline" %>
-        <%= link_to "🗑 削除", tweet_path(@tweet), method: :delete, data: { confirm: "本当に削除しますか？" }, class: "text-red-400 hover:underline" %>
+        <%= link_to "✏ Edit", edit_tweet_path(@tweet), class: "text-blue-400 hover:underline" %>
+        <%= link_to "🗑 Delete", tweet_path(@tweet),
+          method: :delete,
+          data: { confirm: "Are you sure to delete?", turbo: false },
+          class: "text-red-400 hover:underline" %>
       </div>
     <% end %>
   </div>
 
-  <!-- コメントセクション -->
+  <!-- Comment Section -->
   <div class="mt-10 max-w-2xl mx-auto">
-    <h2 class="text-xl text-green-400 mb-4">💬 コメント</h2>
+    <h2 class="text-xl text-green-400 mb-4">💬 Comments</h2>
 
     <div id="comments" class="space-y-4">
       <% @tweet.comments.where(parent_id: nil).each do |comment| %>
@@ -34,7 +53,7 @@
     </div>
   </div>
 
-  <!-- 閲覧時間のログ -->
+  <!-- View Duration Logging -->
   <script>
     const start = Date.now();
     window.addEventListener("beforeunload", function () {
@@ -47,8 +66,8 @@
     });
   </script>
 
-  <!-- 戻る -->
+  <!-- Back Link -->
   <div class="mt-8 text-center">
-    <%= link_to "← 戻る", tweets_path, class: "text-yellow-400 hover:underline" %>
+    <%= link_to "← Back", tweets_path, class: "text-yellow-400 hover:underline" %>
   </div>
 </div>
